@@ -1,0 +1,29 @@
+/*https://www.hackerrank.com/challenges/full-score/problem*/
+
+
+SELECT idk.hacker_id,
+       idk.name
+FROM
+
+(
+SELECT fs.name,
+       fs.hacker_id,
+       COUNT(DISTINCT fs.challenge_id)
+  FROM
+(
+SELECT h.name,
+       s.hacker_id,
+       s.challenge_id,
+       s.score,
+       c.difficulty_level,
+       d.score AS full_score_needed
+  FROM submissions s
+ INNER JOIN challenges c on c.challenge_id = s.challenge_id
+ INNER JOIN difficulty d on d.difficulty_level = c.difficulty_level
+ INNER JOIN hackers h on h.hacker_id = s.hacker_id
+ WHERE s.score = d.score
+) fs
+GROUP BY 1,2
+HAVING COUNT(DISTINCT fs.challenge_id) > 1
+ORDER BY 3 DESC, 2 ASC
+) idk;
